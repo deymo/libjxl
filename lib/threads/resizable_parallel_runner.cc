@@ -12,6 +12,9 @@
 #include <thread>
 #include <vector>
 
+#include <iostream>
+#include <typeinfo>
+
 namespace jpegxl {
 namespace {
 
@@ -173,6 +176,7 @@ JXL_THREADS_EXPORT JxlParallelRetCode JxlResizableParallelRunner(
 
 JXL_THREADS_EXPORT void* JxlResizableParallelRunnerCreate(
     const JxlMemoryManager* memory_manager) {
+  std::cout << "type is: " << &typeid(decltype(JxlResizableParallelRunner)) << std::endl;
   return new jpegxl::ResizeableParallelRunner();
 }
 

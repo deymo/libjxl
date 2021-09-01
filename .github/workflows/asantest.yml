@@ -1,0 +1,65 @@
+# Copyright (c) the JPEG XL Project Authors. All rights reserved.
+#
+# Use of this source code is governed by a BSD-style
+# license that can be found in the LICENSE file.
+
+# Workflow for building and running tests.
+
+name: Build/Test
+on:
+  push:
+    branches:
+      - asantest
+      - v*.*.x
+  pull_request:
+    types: [opened, reopened, labeled, synchronize]
+
+jobs:
+  ubuntu_build:
+    name: Ubuntu Build asan test
+    runs-on: [ubuntu-latest]
+    steps:
+    - name: Install build deps
+      run: |
+        sudo apt update
+        sudo apt install -y \
+          ccache \
+          clang-7 \
+          cmake \
+          doxygen \
+          libbrotli-dev \
+          libgdk-pixbuf2.0-dev \
+          libgif-dev \
+          libgtest-dev \
+          libgtk2.0-dev  \
+          libjpeg-dev \
+          libopenexr-dev \
+          libpng-dev \
+          libwebp-dev \
+          ninja-build \
+          pkg-config \
+          xvfb \
+        #
+        echo "CC=clang-7" >> $GITHUB_ENV
+        echo "CXX=clang++-7" >> $GITHUB_ENV
+    - name: Checkout the source
+      uses: actions/checkout@v2
+      with:
+        submodules: true
+        fetch-depth: 2
+    - name: Git environment
+      id: git-env
+      run: |
+        echo "::set-output name=parent::$(git rev-parse ${{ github.sha }}^)"
+      shell: bash
+    - name: Build
+      run: |
+        ./ci.sh asan -DJPEGXL_FORCE_SYSTEM_BROTLI=ON \
+          -DJPEGXL_ENABLE_BENCHMARK=OFF -DJPEGXL_ENABLE_TOOLS=OFF \
+          -DJPEGXL_ENABLE_DEVTOOLS=OFF -DJPEGXL_ENABLE_FUZZERS=OFF
+      env:
+        SKIP_TEST: 1
+    - name: Test decode
+      run: |
+        readelf --dyn-syms --wide build/libjxl.so.0.6.0
+        build/decode_oneshot third_party/testdata/jxl/blending/cropped_traffic_light.jxl a b

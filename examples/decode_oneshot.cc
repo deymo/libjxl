@@ -13,6 +13,8 @@
 #include <string.h>
 
 #include <vector>
+#include <iostream>
+#include <typeinfo>
 
 #include "jxl/decode.h"
 #include "jxl/decode_cxx.h"
@@ -39,6 +41,8 @@ bool DecodeJpegXlOneShot(const uint8_t* jxl, size_t size,
     fprintf(stderr, "JxlDecoderSubscribeEvents failed\n");
     return false;
   }
+
+  std::cout << "decode_oneshot type is: " << &typeid(decltype(&JxlResizableParallelRunner)) << std::endl;
 
   if (JXL_DEC_SUCCESS != JxlDecoderSetParallelRunner(dec.get(),
                                                      JxlResizableParallelRunner,
