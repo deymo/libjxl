@@ -1,0 +1,71 @@
+# Copyright (c) the JPEG XL Project Authors. All rights reserved.
+#
+# Use of this source code is governed by a BSD-style
+# license that can be found in the LICENSE file.
+
+# Workflow for building and running tests.
+
+name: Coverage
+on:
+  push:
+    branches:
+      - main
+      - v*.*.x
+      - coverage
+  pull_request:
+    types: [opened, reopened, labeled, synchronize]
+
+jobs:
+  ubuntu_build:
+    name: Ubuntu Coverage Build
+    runs-on: [ubuntu-latest]
+
+    steps:
+    - name: Install build deps
+      run: |
+        sudo apt update
+        sudo apt install -y \
+          ccache \
+          clang-7 \
+          cmake \
+          doxygen \
+          libbrotli-dev \
+          libgdk-pixbuf2.0-dev \
+          libgif-dev \
+          libgtest-dev \
+          libgtk2.0-dev  \
+          libjpeg-dev \
+          libopenexr-dev \
+          libpng-dev \
+          libwebp-dev \
+          ninja-build \
+          pkg-config \
+          gcovr \
+        #
+        echo "CC=clang-7" >> $GITHUB_ENV
+        echo "CXX=clang++-7" >> $GITHUB_ENV
+    - name: Checkout the source
+      uses: actions/checkout@v2
+      with:
+        submodules: true
+        fetch-depth: 2
+    - name: Build
+      run: |
+        ./ci.sh coverage -DJPEGXL_FORCE_SYSTEM_BROTLI=ON
+      env:
+        SKIP_TEST: 1
+    # Run the tests on push and when requested in pull_request.
+    - name: Test
+      run: |
+        ./ci.sh test
+      env:
+        # Coverage builds use more stack for coverage tracking.
+        TEST_STACK_LIMIT: 1024
+    - name: Test
+      run: |
+        ./ci.sh coverage_report
+    - name: Codecov upload
+      uses: codecov/codecov-action@v2
+      with:
+        flags: unittests
+        files: build/coverage.xml
