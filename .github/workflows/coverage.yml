@@ -57,11 +57,14 @@ jobs:
     # Run the tests on push and when requested in pull_request.
     - name: Test
       run: |
-        ./ci.sh test
+        ./ci.sh test -E '^JxlTest'
       env:
         # Coverage builds use more stack for coverage tracking.
         TEST_STACK_LIMIT: 1024
-    - name: Test
+    - name: Test runtime stats
+      run: |
+        sort build/Testing/Temporary/CTestCostData.txt -k 3 -n | tail -n 20
+    - name: Generate coverage report
       run: |
         ./ci.sh coverage_report
     - name: Codecov upload
