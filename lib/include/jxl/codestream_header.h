@@ -4,6 +4,9 @@
  * license that can be found in the LICENSE file.
  */
 
+/** @addtogroup libjxl_common
+ *  @{
+ */
 /** @file codestream_header.h
  * @brief Definitions of structs and enums for the metadata from the JPEG XL
  * codestream headers (signature, metadata, preview dimensions, ...), excluding
@@ -319,3 +322,5 @@ typedef struct {
 #endif
 
 #endif /* JXL_CODESTREAM_HEADER_H_ */
+
+/** @}*/

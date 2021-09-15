@@ -4,6 +4,9 @@
  * license that can be found in the LICENSE file.
  */
 
+/** @addtogroup libjxl_decoder
+ *  @{
+ */
 /** @file decode.h
  * @brief Decoding API for JPEG XL.
  */
@@ -936,3 +939,5 @@ JXL_EXPORT JxlDecoderStatus JxlDecoderFlushImage(JxlDecoder* dec);
 #endif
 
 #endif /* JXL_DECODE_H_ */
+
+/** @}*/

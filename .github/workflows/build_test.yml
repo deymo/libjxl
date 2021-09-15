@@ -95,6 +95,10 @@ jobs:
         #
         echo "CC=clang-7" >> $GITHUB_ENV
         echo "CXX=clang++-7" >> $GITHUB_ENV
+        # Dependencies for sphinx HTML documentation
+        if [[ ${{ matrix.name }} == 'release' ]]; then
+          pip3 install -r doc/sphinx/requirements.txt
+        fi
     - name: Checkout the source
       uses: actions/checkout@v2
       with:
@@ -168,6 +172,10 @@ jobs:
     - name: Test runtime stats
       run: |
         sort build/Testing/Temporary/CTestCostData.txt -k 3 -n | tail -n 20 || true
+    - name: Build HTML documentation (sphinx/readthetdocs)
+      if: matrix.name == 'release'
+      run: |
+        cmake --build build -- rtd-html
     - name: Coverage report
       if: github.event_name == 'push' && matrix.name == 'coverage'
       run: |

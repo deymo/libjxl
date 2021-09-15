@@ -4,6 +4,9 @@
  * license that can be found in the LICENSE file.
  */
 
+/** @addtogroup libjxl_encoder
+ *  @{
+ */
 /** @file encode.h
  * @brief Encoding API for JPEG XL.
  */
@@ -390,3 +393,5 @@ JXL_EXPORT void JxlColorEncodingSetToLinearSRGB(
 #endif
 
 #endif /* JXL_ENCODE_H_ */
+
+/** @}*/

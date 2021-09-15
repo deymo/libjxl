@@ -4,6 +4,9 @@
  * license that can be found in the LICENSE file.
  */
 
+/** @addtogroup libjxl_common
+ *  @{
+ */
 /** @file types.h
  * @brief Data types for the JPEG XL API, for both encoding and decoding.
  */
@@ -114,3 +117,5 @@ typedef struct {
 #endif
 
 #endif /* JXL_TYPES_H_ */
+
+/** @}*/
